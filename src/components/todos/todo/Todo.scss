@@ -1,0 +1,30 @@
+div.todo {
+  width: 100%;
+  display: flex;
+  margin-bottom: .25em;
+  div.todo-box {
+    float: left;
+    width: 95%;
+    flex-grow: 1;
+    flex-direction: column;
+    background: #fff;
+    padding: 1em;
+    text-align: left;
+    span {
+      margin-left: .25em;
+    }
+  }
+  div.todo-remove {
+    display: flex;
+    float: right;
+    width: 5%;
+    background: #ff0000;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+}
+div.todo.done {
+  opacity: 0.5;
+}
