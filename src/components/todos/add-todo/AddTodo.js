@@ -1,16 +1,15 @@
 import {useState} from "react";
-import Button from "../../button/Button";
 import {connect} from "react-redux";
 import './AddTodo.scss';
+import {Icon, Input, Message} from "semantic-ui-react";
+import {v4 as uuidv4} from 'uuid';
 
 const AddTodo = (props) => {
     const [todo, setTodo] = useState('');
     const [error, setError] = useState(null);
     const addTodo = () => {
-        if (!!!todo) {
+        if (!!!todo || todo.trim() === '') {
             setError('Todo cannot be empty');
-        } else if (props.todos.findIndex(t => t.text === todo.trim()) !== -1) {
-            setError(`${todo} already exists`);
         } else {
             setError(null);
             props.addTodo(todo.trim());
@@ -25,27 +24,26 @@ const AddTodo = (props) => {
     };
     return (
         <div className="add-todo">
-            {error && <p className="error">{error}</p>}
-            <input
-                type="text"
-                name="add-todo"
+            {error && <Message negative><p>{error}</p></Message>}
+            <Input
+                icon={<Icon name="plus" link onClick={addTodo} disabled={todo.trim().length === 0}/>}
                 onKeyDown={onKeyDown}
-                onChange={(e) => setTodo(e.target.value)} />
-            <Button
-                text="Add Todo"
-                click={addTodo}
-                disabled={todo.trim().length === 0}
+                onChange={e => setTodo(e.target.value)}
+                name="add-todo"
+                placeholder="Add Todo"
             />
         </div>
     );
 };
 
-export default connect(state => {
+const ConnectedAddTodo = connect(state => {
     return {
         todos: state.todos
     };
 }, dispatch => {
     return {
-        addTodo: todo => dispatch({type: 'ADD', todo: {text: todo, done: false}})
+        addTodo: todo => dispatch({type: 'ADD', todo: {id: uuidv4(), text: todo, done: false}})
     };
 })(AddTodo);
+
+export default ConnectedAddTodo;

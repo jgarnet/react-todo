@@ -12,13 +12,13 @@ const todoReducer = (state = todoDefaultState, action) => {
         case 'REMOVE':
             return {
                 ...state,
-                todos: state.todos.filter(todo => todo !== action.todo)
+                todos: state.todos.filter(todo => todo.id !== action.todo.id)
             };
         case 'DONE':
             return {
                 ...state,
                 todos: state.todos.map(todo => {
-                    if (todo.text === action.todo.text) {
+                    if (todo.id === action.todo.id) {
                         return {
                             ...todo,
                             done: true

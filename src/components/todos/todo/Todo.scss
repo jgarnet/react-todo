@@ -2,6 +2,22 @@ div.todo {
   width: 100%;
   display: flex;
   margin-bottom: .25em;
+  transition: all 200ms linear;
+  -webkit-transition: all 200ms linear;
+  animation: fadeIn 200ms linear forwards;
+  div.todo-check {
+    display: flex;
+    float: left;
+    width: 5%;
+    background: #1a5e8f;
+    color: #fff;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 200ms linear;
+    -webkit-transition: all 200ms linear;
+    border-radius: 5px 0 0 5px;
+  }
   div.todo-box {
     float: left;
     width: 95%;
@@ -13,6 +29,8 @@ div.todo {
     span {
       margin-left: .25em;
     }
+    transition: all 200ms linear;
+    -webkit-transition: all 200ms linear;
   }
   div.todo-remove {
     display: flex;
@@ -23,8 +41,42 @@ div.todo {
     align-items: center;
     justify-content: center;
     cursor: pointer;
+    transition: all 200ms linear;
+    border-radius: 0 5px 5px 0;
   }
 }
 div.todo.done {
   opacity: 0.5;
+  div.todo-check {
+    background: #fff;
+    color: #000;
+    cursor: default;
+  }
+  div.todo-box {
+    border-radius: 0 5px 5px 0;
+  }
+}
+
+div.todo.fade-out {
+  animation: fadeOut 200ms linear forwards;
+}
+
+.hover-fade {
+  transition: all linear 200ms;
+}
+.hover-fade:hover {
+  opacity: 0.5;
+}
+div.todo.done .hover-fade {
+  opacity: 1;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0 }
+  to { opacity: 1 }
+}
+
+@keyframes fadeOut {
+  from { opacity: 1 }
+  to { opacity: 0 }
 }

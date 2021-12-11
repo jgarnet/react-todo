@@ -1,6 +1,6 @@
 import {connect} from "react-redux";
-import Button from "../../button/Button";
 import './Todo.scss';
+import {Icon} from "semantic-ui-react";
 
 const Todo = (props) => {
     const markDone = () => {
@@ -8,28 +8,28 @@ const Todo = (props) => {
             props.markDone(props.todo);
         }
     };
+    const removeTodo = () => {
+        document.querySelector(`div[id='${props.todo.id}']`).classList.add('fade-out');
+        setTimeout(() => props.removeTodo(props.todo), 200);
+    };
     return (
-        <div className={`todo ${props.todo.done && 'done'}`}>
+        <div id={props.todo.id} className={`todo ${props.todo.done && 'done'}`}>
+            <div className="todo-check hover-fade" onClick={markDone}>
+                <Icon name="check" />
+            </div>
             <div className="todo-box">
-                <input
-                    type="checkbox"
-                    onClick={markDone}
-                    checked={props.todo.done}
-                    readOnly={true}
-                    disabled={props.todo.done}
-                />
                 <span>{props.todo.text}</span>
             </div>
             {!props.todo.done &&
-            <div className="todo-remove" onClick={() => props.removeTodo(props.todo)}>
-                <span>x</span>
+            <div className="todo-remove hover-fade" onClick={removeTodo}>
+                <Icon name='x'/>
             </div>
             }
         </div>
     );
 };
 
-export default connect(state => {
+export default connect(() => {
     return {};
 }, dispatch => {
     return {
