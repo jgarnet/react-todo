@@ -1,0 +1,34 @@
+{
+  "todos": [
+    {
+      "id": "7a3897f1-9329-421b-a926-5a0316fe195a",
+      "text": "Walk the dog",
+      "done": false
+    },
+    {
+      "id": "535bb734-350b-4490-9ad0-6412efcb3df6",
+      "text": "Wash the car",
+      "done": false
+    },
+    {
+      "id": "99aca707-a927-457d-ae4c-a45b6b8216a7",
+      "text": "Take out the trash",
+      "done": false
+    },
+    {
+      "id": "0145ae9a-fbbc-4469-968e-429a98f5c046",
+      "text": "Get groceries",
+      "done": false
+    },
+    {
+      "id": "e25ed799-84eb-4f17-a87f-fba62a085500",
+      "text": "Make dinner",
+      "done": false
+    },
+    {
+      "id": "69b2dc15-58f3-40c5-af63-4422a0786bac",
+      "text": "Learn React",
+      "done": true
+    }
+  ]
+}
