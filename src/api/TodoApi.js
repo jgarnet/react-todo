@@ -7,8 +7,8 @@ const DEFAULT_OPTIONS = {
 const apiCall = (url, success, error, finalize, options = DEFAULT_OPTIONS) => {
     fetch(url, options)
         .then(res => res.json())
-        .then(res => success(res))
-        .catch(e => error(e))
+        .then(success)
+        .catch(error)
         .finally(finalize);
 };
 const TodoApi = {
