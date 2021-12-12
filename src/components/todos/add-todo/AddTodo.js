@@ -3,6 +3,7 @@ import {connect} from "react-redux";
 import './AddTodo.scss';
 import {Icon, Input, Message} from "semantic-ui-react";
 import {v4 as uuidv4} from 'uuid';
+import TodoApi from "../../../api/TodoApi";
 
 const AddTodo = (props) => {
     const [todo, setTodo] = useState('');
@@ -11,10 +12,13 @@ const AddTodo = (props) => {
         if (!!!todo || todo.trim() === '') {
             setError('Todo cannot be empty');
         } else {
-            setError(null);
-            props.addTodo(todo.trim());
-            setTodo('');
-            document.querySelector('input[name=add-todo]').value = '';
+            const newTodo = {id: uuidv4(), text: todo.trim(), done: false};
+            TodoApi.addTodo(newTodo, todo => {
+                setError(null);
+                props.addTodo(todo);
+                setTodo('');
+                document.querySelector('input[name=add-todo]').value = '';
+            }, e => setError(e));
         }
     };
     const onKeyDown = e => {
@@ -42,7 +46,7 @@ const ConnectedAddTodo = connect(state => {
     };
 }, dispatch => {
     return {
-        addTodo: todo => dispatch({type: 'ADD', todo: {id: uuidv4(), text: todo, done: false}})
+        addTodo: todo => dispatch({type: 'ADD', todo})
     };
 })(AddTodo);
 

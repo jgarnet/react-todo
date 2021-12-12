@@ -4,6 +4,11 @@ const todoDefaultState = {
 
 const todoReducer = (state = todoDefaultState, action) => {
     switch (action.type) {
+        case 'SET':
+            return {
+                ...state,
+                todos: [...action.todos]
+            };
         case 'ADD':
             return {
                 ...state,

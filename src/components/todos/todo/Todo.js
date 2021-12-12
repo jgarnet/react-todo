@@ -1,16 +1,23 @@
 import {connect} from "react-redux";
 import './Todo.scss';
 import {Icon} from "semantic-ui-react";
+import TodoApi from "../../../api/TodoApi";
 
 const Todo = (props) => {
     const markDone = () => {
         if (!props.todo.done) {
-            props.markDone(props.todo);
+            const updatedTodo = Object.assign({}, props.todo);
+            updatedTodo.done = true;
+            TodoApi.updateTodo(updatedTodo, () => {
+                props.markDone(props.todo);
+            });
         }
     };
     const removeTodo = () => {
-        document.querySelector(`div[id='${props.todo.id}']`).classList.add('fade-out');
-        setTimeout(() => props.removeTodo(props.todo), 200);
+        TodoApi.removeTodo(props.todo.id, () => {
+            document.querySelector(`div[id='${props.todo.id}']`).classList.add('fade-out');
+            setTimeout(() => props.removeTodo(props.todo), 200);
+        });
     };
     return (
         <div id={props.todo.id} className={`todo ${props.todo.done && 'done'}`}>
