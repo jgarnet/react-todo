@@ -20,7 +20,7 @@ div.todo {
   }
   div.todo-box {
     float: left;
-    width: 95%;
+    width: 90%;
     flex-grow: 1;
     flex-direction: column;
     background: #fff;
@@ -79,4 +79,13 @@ div.todo.done .hover-fade {
 @keyframes fadeOut {
   from { opacity: 1 }
   to { opacity: 0 }
+}
+
+@media screen and (max-width: 500px) {
+  div.todo-box {
+    text-align: center !important;
+  }
+  div.todo-check, div.todo-remove {
+    width: 10% !important;
+  }
 }
