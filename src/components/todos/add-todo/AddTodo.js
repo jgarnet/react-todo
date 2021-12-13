@@ -41,9 +41,7 @@ const AddTodo = (props) => {
 };
 
 const ConnectedAddTodo = connect(state => {
-    return {
-        todos: state.todos
-    };
+    return {};
 }, dispatch => {
     return {
         addTodo: todo => dispatch({type: 'ADD', todo})

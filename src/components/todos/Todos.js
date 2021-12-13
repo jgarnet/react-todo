@@ -3,8 +3,9 @@ import Todo from "./todo/Todo";
 import AddTodo from "./add-todo/AddTodo";
 import {connect} from "react-redux";
 import './Todos.scss';
-import {Card, Header, Icon, Loader} from "semantic-ui-react";
+import {Card, Divider, Header, Icon, Loader} from "semantic-ui-react";
 import TodoApi from "../../api/TodoApi";
+import FilterTodos from "./filter-todos/FilterTodos";
 
 class Todos extends React.Component {
     constructor(props) {
@@ -12,13 +13,35 @@ class Todos extends React.Component {
         this.state = {
             isLoading: true
         };
+        this.fetchTodos = this.fetchTodos.bind(this);
     }
     componentDidMount() {
+        this.fetchTodos();
+    }
+    componentDidUpdate(prevProps, prevState, snapshot) {
+        if (prevProps.filters !== this.props.filters) {
+            this.fetchTodos(this.props.filters);
+        }
+    }
+    fetchTodos(filters = []) {
         TodoApi.getTodos(todos => {
             this.props.setTodos(todos)
         }, error => {}, () => {
             this.setState({isLoading: false});
-        });
+        }, filters);
+    }
+    filterTodo(todo) {
+        if (!!this.props.filters) {
+            for (const filter of this.props.filters) {
+                for (const [key, value] of Object.entries(filter)) {
+                    if (todo[key] !== value) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+        return true;
     }
     render() {
         return (
@@ -27,8 +50,15 @@ class Todos extends React.Component {
                     <Icon name="list" circular/>
                     <Header.Content>Todos</Header.Content>
                 </Header>
-                {this.props.todos.map(todo => <Todo key={todo.id} todo={todo} />)}
-                {this.props.todos.length === 0 && <Card description="There are no todos :("/>}
+                <FilterTodos/>
+                <Divider/>
+                {this.props.todos
+                    .filter(todo => this.filterTodo(todo))
+                    .reverse()
+                    .map(todo => <Todo key={todo.id} todo={todo} />)
+                }
+                {this.props.todos.filter(todo => this.filterTodo(todo)).length === 0 && <Card description="There are no todos :("/>}
+                <Divider/>
                 <AddTodo />
                 <Loader active={this.state.isLoading} />
             </div>
@@ -38,7 +68,8 @@ class Todos extends React.Component {
 
 const ConnectedTodos = connect(state => {
     return {
-        todos: state.todos
+        todos: state.todo.todos,
+        filters: state.todoApi.filters
     };
 }, dispatch => {
     return {

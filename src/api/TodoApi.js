@@ -11,9 +11,20 @@ const apiCall = (url, success, error, finalize, options = DEFAULT_OPTIONS) => {
         .catch(error)
         .finally(finalize);
 };
+const defaultUrl = `${process.env.REACT_APP_API_URL}/todos`;
 const TodoApi = {
-    getTodos: (success, error, finalize) => {
-        apiCall(`${process.env.REACT_APP_API_URL}/todos`, success, error, finalize)
+    getTodos: (success, error, finalize, filters) => {
+        let url = defaultUrl;
+        if (!!filters) {
+            url += '?';
+            filters.forEach(filter => {
+                for (const [key, value] of Object.entries(filter)) {
+                    url += `${key}=${value}&`;
+                }
+            });
+            url = url.substring(0, url.length - 1);
+        }
+        apiCall(url, success, error, finalize)
     },
     addTodo: (todo, success, error, finalize) => {
         apiCall(`${process.env.REACT_APP_API_URL}/todos`, success, error, finalize, {
