@@ -11,7 +11,10 @@ const Todo = (props) => {
         }
     };
     const removeTodo = () => {
-        TodoApi.removeTodo(props.todo.id, props.resetPage);
+        TodoApi.removeTodo(props.todo.id, () => {
+            document.querySelector(`div[id='${props.todo.id}']`).classList.add('fade-out');
+            setTimeout(props.resetPage, 200);
+        });
     };
     return (
         <div id={props.todo.id} className={`todo${props.todo.done ? ' done' : ''} fade-in`}>
