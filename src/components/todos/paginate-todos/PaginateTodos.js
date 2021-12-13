@@ -1,39 +1,31 @@
 import {connect} from "react-redux";
 import React from "react";
 import {Pagination} from "semantic-ui-react";
-import TodoApi from "../../../api/TodoApi";
 
 class PaginateTodos extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            totalPages: 1
+            totalPages: 1,
+            currentPage: props.page
         };
-        this.fetchTotalPages = this.fetchTotalPages.bind(this);
         this.changePage = this.changePage.bind(this);
     }
-    componentDidMount() {
-        this.fetchTotalPages();
-    }
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.filters !== this.props.filters) {
-            this.fetchTotalPages();
+        if (prevProps.total !== this.props.total) {
+            this.setState({totalPages: this.props.total});
+        }
+        if (prevProps.page !== this.props.page) {
+            this.setState({currentPage: this.props.page});
         }
     }
-    fetchTotalPages() {
-        TodoApi.getCount(this.props.filters).then(totalCount => {
-            this.setState({
-                totalPages: Math.max(1, Math.ceil(totalCount / this.props.limit))
-            });
-        });
-    }
     changePage(page) {
-        this.props.setPage(page);
+        this.props.onPageChange(page);
     }
     render() {
         return <Pagination
             totalPages={this.state.totalPages}
-            activePage={this.props.page}
+            activePage={this.state.currentPage}
             onPageChange={(e, d) => this.changePage(d.activePage)}/>;
     }
 }
@@ -41,12 +33,11 @@ class PaginateTodos extends React.Component {
 const ConnectedPaginateTodos = connect(state => {
     return {
         page: state.todoApi.page,
-        limit: state.todoApi.limit
+        limit: state.todoApi.limit,
+        total: state.todoApi.total
     };
 }, dispatch => {
-    return {
-        setPage: page => dispatch({type: 'PAGE', value: page})
-    };
+    return {};
 })(PaginateTodos);
 
 export default ConnectedPaginateTodos;

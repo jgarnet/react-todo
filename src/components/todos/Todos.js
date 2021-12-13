@@ -15,34 +15,35 @@ class Todos extends React.Component {
             isLoading: true
         };
         this.fetchTodos = this.fetchTodos.bind(this);
+        this.changePage = this.changePage.bind(this);
+        this.resetPage = this.resetPage.bind(this);
     }
     componentDidMount() {
         this.fetchTodos();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.filters !== this.props.filters) {
+            this.resetPage();
+        } else if (prevProps.page !== this.props.page || prevProps.limit !== this.props.limit) {
             this.fetchTodos(this.props.filters);
         }
     }
     fetchTodos(filters = []) {
         TodoApi.getTodos(todos => {
-            this.props.setTodos(todos)
+            this.props.setTodos(todos);
+            TodoApi.getCount(filters).then(totalCount => {
+                this.props.setTotal(Math.max(1, Math.ceil(totalCount / this.props.limit)));
+            });
         }, error => {}, () => {
             this.setState({isLoading: false});
         }, {filters, page: this.props.page, limit: this.props.limit});
     }
-    filterTodo(todo) {
-        if (!!this.props.filters) {
-            for (const filter of this.props.filters) {
-                for (const [key, value] of Object.entries(filter)) {
-                    if (todo[key] !== value) {
-                        return false;
-                    }
-                }
-            }
-            return true;
-        }
-        return true;
+    changePage(page) {
+        this.props.setPage(page);
+    }
+    resetPage() {
+        this.fetchTodos(this.props.filters);
+        this.changePage(1);
     }
     render() {
         return (
@@ -53,18 +54,12 @@ class Todos extends React.Component {
                 </Header>
                 <FilterTodos/>
                 <Divider/>
-                {this.props.todos
-                    .filter(todo => this.filterTodo(todo))
-                    .reverse()
-                    .map(todo => <Todo key={todo.id} todo={todo} />)
-                }
-                {this.props.todos.filter(todo => this.filterTodo(todo)).length === 0 &&
-                <Card description="There are no todos :(" className="fade-in"/>
-                }
+                {this.props.todos.map(todo => <Todo key={todo.id} todo={todo} resetPage={this.resetPage} />)}
+                {this.props.todos.length === 0 && <Card description="There are no todos :(" className="fade-in"/>}
                 <Divider/>
-                <PaginateTodos/>
+                <PaginateTodos onPageChange={page => this.changePage(page)}/>
                 <Divider/>
-                <AddTodo />
+                <AddTodo onAdd={this.resetPage} />
                 <Loader active={this.state.isLoading} />
             </div>
         );
@@ -80,7 +75,9 @@ const ConnectedTodos = connect(state => {
     };
 }, dispatch => {
     return {
-        setTodos: todos => dispatch({type: 'SET', todos})
+        setTodos: todos => dispatch({type: 'SET', todos}),
+        setPage: page => dispatch({type: 'PAGE', value: page}),
+        setTotal: total => dispatch({type: 'TOTAL', value: total})
     };
 })(Todos);
 

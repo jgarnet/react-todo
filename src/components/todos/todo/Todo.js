@@ -1,4 +1,3 @@
-import {connect} from "react-redux";
 import './Todo.scss';
 import {Icon} from "semantic-ui-react";
 import TodoApi from "../../../api/TodoApi";
@@ -8,16 +7,11 @@ const Todo = (props) => {
         if (!props.todo.done) {
             const updatedTodo = Object.assign({}, props.todo);
             updatedTodo.done = true;
-            TodoApi.updateTodo(updatedTodo, () => {
-                props.markDone(props.todo);
-            });
+            TodoApi.updateTodo(updatedTodo, props.resetPage);
         }
     };
     const removeTodo = () => {
-        TodoApi.removeTodo(props.todo.id, () => {
-            document.querySelector(`div[id='${props.todo.id}']`).classList.add('fade-out');
-            setTimeout(() => props.removeTodo(props.todo), 200);
-        });
+        TodoApi.removeTodo(props.todo.id, props.resetPage);
     };
     return (
         <div id={props.todo.id} className={`todo${props.todo.done ? ' done' : ''} fade-in`}>
@@ -36,11 +30,4 @@ const Todo = (props) => {
     );
 };
 
-export default connect(() => {
-    return {};
-}, dispatch => {
-    return {
-        removeTodo: todo => dispatch({type: 'REMOVE', todo}),
-        markDone: todo => dispatch({type: 'DONE', todo})
-    };
-})(Todo);
+export default Todo;

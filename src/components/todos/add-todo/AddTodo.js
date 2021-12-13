@@ -12,12 +12,12 @@ const AddTodo = (props) => {
         if (!!!todo || todo.trim() === '') {
             setError('Todo cannot be empty');
         } else {
-            const newTodo = {id: uuidv4(), text: todo.trim(), done: false};
+            const newTodo = {id: uuidv4(), text: todo.trim(), done: false, date: new Date().toUTCString()};
             TodoApi.addTodo(newTodo, todo => {
                 setError(null);
-                props.addTodo(todo);
                 setTodo('');
                 document.querySelector('input[name=add-todo]').value = '';
+                props.onAdd();
             }, e => setError(e));
         }
     };
