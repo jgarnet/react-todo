@@ -1,6 +1,6 @@
 import React from "react";
 import {connect} from "react-redux";
-import {Button} from "semantic-ui-react";
+import {Button, Icon} from "semantic-ui-react";
 
 const selectionFilters = {
     all: [],
@@ -14,19 +14,7 @@ class FilterTodos extends React.Component {
         this.state = {
             selected: 'all'
         };
-        this.selectAll = this.selectAll.bind(this);
-        this.selectTodo = this.selectTodo.bind(this);
-        this.selectDone = this.selectDone.bind(this);
         this.handleSelect = this.handleSelect.bind(this);
-    }
-    selectAll() {
-        this.handleSelect('all');
-    }
-    selectTodo() {
-        this.handleSelect('todo');
-    }
-    selectDone() {
-        this.handleSelect('done');
     }
     handleSelect(selection) {
         if (this.state.selected !== selection) {
@@ -38,11 +26,20 @@ class FilterTodos extends React.Component {
     }
     render() {
         return (
-            <Button.Group>
-                <Button active={this.state.selected === 'all'} onClick={this.selectAll}>All</Button>
-                <Button active={this.state.selected === 'todo'} onClick={this.selectTodo}>Todo</Button>
-                <Button active={this.state.selected === 'done'} onClick={this.selectDone}>Done</Button>
-            </Button.Group>
+            <div>
+                <Icon name='filter'/>
+                <Button.Group>
+                    <Button
+                        active={this.state.selected === 'all'}
+                        onClick={() => this.handleSelect('all')}>All</Button>
+                    <Button
+                        active={this.state.selected === 'todo'}
+                        onClick={() => this.handleSelect('todo')}>Todo</Button>
+                    <Button
+                        active={this.state.selected === 'done'}
+                        onClick={() => this.handleSelect('done')}>Done</Button>
+                </Button.Group>
+            </div>
         );
     }
 }

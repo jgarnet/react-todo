@@ -1,24 +1,26 @@
 import {useState} from "react";
 import {connect} from "react-redux";
 import './AddTodo.scss';
-import {Icon, Input, Message} from "semantic-ui-react";
+import {Icon, Input, Loader, Message} from "semantic-ui-react";
 import {v4 as uuidv4} from 'uuid';
 import TodoApi from "../../../api/TodoApi";
 
 const AddTodo = (props) => {
     const [todo, setTodo] = useState('');
     const [error, setError] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const addTodo = () => {
         if (!!!todo || todo.trim() === '') {
             setError('Todo cannot be empty');
-        } else {
+        } else if (!isLoading) {
+            setIsLoading(true);
             const newTodo = {id: uuidv4(), text: todo.trim(), done: false, date: new Date().toUTCString()};
             TodoApi.addTodo(newTodo, todo => {
                 setError(null);
                 setTodo('');
                 document.querySelector('input[name=add-todo]').value = '';
                 props.onAdd();
-            }, e => setError(e));
+            }, e => setError(e), () => setIsLoading(false));
         }
     };
     const onKeyDown = e => {
@@ -35,7 +37,9 @@ const AddTodo = (props) => {
                 onChange={e => setTodo(e.target.value)}
                 name="add-todo"
                 placeholder="Add Todo"
+                disabled={isLoading}
             />
+            <Loader active={isLoading}/>
         </div>
     );
 };

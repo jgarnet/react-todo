@@ -15,6 +15,7 @@ class Todos extends React.Component {
             isLoading: true
         };
         this.fetchTodos = this.fetchTodos.bind(this);
+        this.fetchCount = this.fetchCount.bind(this);
         this.changePage = this.changePage.bind(this);
         this.resetPage = this.resetPage.bind(this);
     }
@@ -25,24 +26,30 @@ class Todos extends React.Component {
         if (prevProps.filters !== this.props.filters) {
             this.resetPage();
         } else if (prevProps.page !== this.props.page || prevProps.limit !== this.props.limit) {
-            this.fetchTodos(this.props.filters);
+            this.fetchTodos();
         }
     }
-    fetchTodos(filters = []) {
+    fetchTodos() {
+        this.setState({isLoading: true});
         TodoApi.getTodos(todos => {
             this.props.setTodos(todos);
-            TodoApi.getCount(filters).then(totalCount => {
+            this.fetchCount();
+        }, () => this.setState({isLoading: false}),
+            () => {},
+            {filters: this.props.filters, page: this.props.page, limit: this.props.limit});
+    }
+    fetchCount() {
+        TodoApi
+            .getCount(this.props.filters, () => {}, () => this.setState({isLoading: false}))
+            .then(totalCount => {
                 this.props.setTotal(Math.max(1, Math.ceil(totalCount / this.props.limit)));
             });
-        }, error => {}, () => {
-            this.setState({isLoading: false});
-        }, {filters, page: this.props.page, limit: this.props.limit});
     }
     changePage(page) {
         this.props.setPage(page);
     }
     resetPage() {
-        this.fetchTodos(this.props.filters);
+        this.fetchTodos();
         this.changePage(1);
     }
     render() {

@@ -1,20 +1,27 @@
 import './Todo.scss';
-import {Icon} from "semantic-ui-react";
+import {Icon, Loader} from "semantic-ui-react";
 import TodoApi from "../../../api/TodoApi";
+import {useState} from "react";
 
 const Todo = (props) => {
+    const [isLoading, setIsLoading] = useState(false);
     const markDone = () => {
-        if (!props.todo.done) {
+        if (!props.todo.done && !isLoading) {
+            setIsLoading(true);
             const updatedTodo = Object.assign({}, props.todo);
             updatedTodo.done = true;
-            TodoApi.updateTodo(updatedTodo, props.resetPage);
+            TodoApi.updateTodo(updatedTodo, props.resetPage, null, () => setIsLoading(false));
         }
     };
     const removeTodo = () => {
-        TodoApi.removeTodo(props.todo.id, () => {
-            document.querySelector(`div[id='${props.todo.id}']`).classList.add('fade-out');
-            setTimeout(props.resetPage, 200);
-        });
+        const elem = document.querySelector(`div[id='${props.todo.id}']`);
+        if (!isLoading && !!elem) {
+            setIsLoading(true);
+            TodoApi.removeTodo(props.todo.id, () => {
+                elem.classList.add('fade-out');
+                setTimeout(props.resetPage, 200);
+            }, null, () => setIsLoading(false));
+        }
     };
     return (
         <div id={props.todo.id} className={`todo${props.todo.done ? ' done' : ''} fade-in`}>
@@ -29,6 +36,7 @@ const Todo = (props) => {
                 <Icon name='x'/>
             </div>
             }
+            <Loader active={isLoading}/>
         </div>
     );
 };

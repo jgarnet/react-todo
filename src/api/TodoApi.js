@@ -35,9 +35,11 @@ const TodoApi = {
     getTodos: (success, error, finalize, options) => {
         apiCall(appendParams(defaultUrl, options), success, error, finalize)
     },
-    getCount: (filters) => {
+    getCount: (filters, error, finalize) => {
         return fetch(appendParams(defaultUrl, {filters, limit: 1, page: 1}))
-            .then(res => res.headers.get('X-Total-Count'));
+            .then(res => res.headers.get('X-Total-Count'))
+            .catch(error)
+            .finally(finalize);
     },
     addTodo: (todo, success, error, finalize) => {
         apiCall(`${process.env.REACT_APP_API_URL}/todos`, success, error, finalize, {
