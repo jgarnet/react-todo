@@ -6,6 +6,7 @@ import './Todos.scss';
 import {Card, Divider, Header, Icon, Loader} from "semantic-ui-react";
 import TodoApi from "../../api/TodoApi";
 import FilterTodos from "./filter-todos/FilterTodos";
+import PaginateTodos from "./paginate-todos/PaginateTodos";
 
 class Todos extends React.Component {
     constructor(props) {
@@ -28,7 +29,7 @@ class Todos extends React.Component {
             this.props.setTodos(todos)
         }, error => {}, () => {
             this.setState({isLoading: false});
-        }, filters);
+        }, {filters, page: this.props.page, limit: this.props.limit});
     }
     filterTodo(todo) {
         if (!!this.props.filters) {
@@ -57,7 +58,11 @@ class Todos extends React.Component {
                     .reverse()
                     .map(todo => <Todo key={todo.id} todo={todo} />)
                 }
-                {this.props.todos.filter(todo => this.filterTodo(todo)).length === 0 && <Card description="There are no todos :("/>}
+                {this.props.todos.filter(todo => this.filterTodo(todo)).length === 0 &&
+                <Card description="There are no todos :(" className="fade-in"/>
+                }
+                <Divider/>
+                <PaginateTodos/>
                 <Divider/>
                 <AddTodo />
                 <Loader active={this.state.isLoading} />
@@ -69,7 +74,9 @@ class Todos extends React.Component {
 const ConnectedTodos = connect(state => {
     return {
         todos: state.todo.todos,
-        filters: state.todoApi.filters
+        filters: state.todoApi.filters,
+        page: state.todoApi.page,
+        limit: state.todoApi.limit
     };
 }, dispatch => {
     return {

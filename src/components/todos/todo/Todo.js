@@ -20,7 +20,7 @@ const Todo = (props) => {
         });
     };
     return (
-        <div id={props.todo.id} className={`todo ${props.todo.done && 'done'}`}>
+        <div id={props.todo.id} className={`todo${props.todo.done ? ' done' : ''} fade-in`}>
             <div className="todo-check hover-fade" onClick={markDone}>
                 <Icon name="check" />
             </div>

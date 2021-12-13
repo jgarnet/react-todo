@@ -11,20 +11,33 @@ const apiCall = (url, success, error, finalize, options = DEFAULT_OPTIONS) => {
         .catch(error)
         .finally(finalize);
 };
+const appendParams = (url, options) => {
+    const params = [];
+    if (!!options.filters) {
+        params.push(...options.filters);
+    }
+    if (!!options.page && !!options.limit) {
+        params.push(...[{_page: options.page, _limit: options.limit}])
+    }
+    if (params.length > 0) {
+        url += '?';
+        params.forEach(filter => {
+            for (const [key, value] of Object.entries(filter)) {
+                url += `${key}=${value}&`;
+            }
+        });
+        url = url.substring(0, url.length - 1);
+    }
+    return url;
+};
 const defaultUrl = `${process.env.REACT_APP_API_URL}/todos`;
 const TodoApi = {
-    getTodos: (success, error, finalize, filters) => {
-        let url = defaultUrl;
-        if (!!filters) {
-            url += '?';
-            filters.forEach(filter => {
-                for (const [key, value] of Object.entries(filter)) {
-                    url += `${key}=${value}&`;
-                }
-            });
-            url = url.substring(0, url.length - 1);
-        }
-        apiCall(url, success, error, finalize)
+    getTodos: (success, error, finalize, options) => {
+        apiCall(appendParams(defaultUrl, options), success, error, finalize)
+    },
+    getCount: (filters) => {
+        return fetch(appendParams(defaultUrl, {filters, limit: 1, page: 1}))
+            .then(res => res.headers.get('X-Total-Count'));
     },
     addTodo: (todo, success, error, finalize) => {
         apiCall(`${process.env.REACT_APP_API_URL}/todos`, success, error, finalize, {

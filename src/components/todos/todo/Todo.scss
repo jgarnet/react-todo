@@ -4,7 +4,6 @@ div.todo {
   margin-bottom: .25em;
   transition: all 200ms linear;
   -webkit-transition: all 200ms linear;
-  animation: fadeIn 200ms linear forwards;
   div.todo-check {
     display: flex;
     float: left;
@@ -57,10 +56,6 @@ div.todo.done {
   }
 }
 
-div.todo.fade-out {
-  animation: fadeOut 200ms linear forwards;
-}
-
 .hover-fade {
   transition: all linear 200ms;
 }
@@ -69,16 +64,6 @@ div.todo.fade-out {
 }
 div.todo.done .hover-fade {
   opacity: 1;
-}
-
-@keyframes fadeIn {
-  from { opacity: 0 }
-  to { opacity: 1 }
-}
-
-@keyframes fadeOut {
-  from { opacity: 1 }
-  to { opacity: 0 }
 }
 
 @media screen and (max-width: 500px) {

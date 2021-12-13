@@ -28,7 +28,7 @@ const AddTodo = (props) => {
     };
     return (
         <div className="add-todo">
-            {error && <Message negative><p>{error}</p></Message>}
+            {error && <Message negative className="fade-in"><p>{error}</p></Message>}
             <Input
                 icon={<Icon name="plus" link onClick={addTodo} disabled={todo.trim().length === 0}/>}
                 onKeyDown={onKeyDown}
