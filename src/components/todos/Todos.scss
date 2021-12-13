@@ -5,10 +5,19 @@ div.todos {
   max-width: calc(min(95%, 800px));
   margin: 0 auto;
   transition: all linear 200ms;
+  div.options {
+    display: flex;
+  }
 }
 
 @media screen and (max-width: 500px) {
   div.todos {
     max-width: 95%;
+  }
+  div.options {
+    flex-direction: column;
+    * {
+      margin: .25em auto;
+    }
   }
 }

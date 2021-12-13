@@ -7,6 +7,7 @@ import {Card, Divider, Header, Icon, Loader} from "semantic-ui-react";
 import TodoApi from "../../api/TodoApi";
 import FilterTodos from "./filter-todos/FilterTodos";
 import PaginateTodos from "./paginate-todos/PaginateTodos";
+import SortTodos from "./sort-todos/SortTodos";
 
 class Todos extends React.Component {
     constructor(props) {
@@ -23,20 +24,28 @@ class Todos extends React.Component {
         this.fetchTodos();
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
-        if (prevProps.filters !== this.props.filters) {
+        if (prevProps.filters !== this.props.filters || prevProps.sort !== this.props.sort) {
             this.resetPage();
         } else if (prevProps.page !== this.props.page || prevProps.limit !== this.props.limit) {
             this.fetchTodos();
         }
     }
     fetchTodos() {
+        // todo: decouple sort from date & make it more dynamic
+        // todo: add useStore() to TodoApi to simplify API
+        const options = {
+            filters: this.props.filters,
+            page: this.props.page,
+            limit: this.props.limit,
+            sort: this.props.sort
+        };
         this.setState({isLoading: true});
         TodoApi.getTodos(todos => {
             this.props.setTodos(todos);
             this.fetchCount();
         }, () => this.setState({isLoading: false}),
             () => {},
-            {filters: this.props.filters, page: this.props.page, limit: this.props.limit});
+            options);
     }
     fetchCount() {
         TodoApi
@@ -59,7 +68,10 @@ class Todos extends React.Component {
                     <Icon name="list" circular/>
                     <Header.Content>Todos</Header.Content>
                 </Header>
-                <FilterTodos/>
+                <div className='options'>
+                    <FilterTodos/>
+                    <SortTodos/>
+                </div>
                 <Divider/>
                 {this.props.todos.map(todo => <Todo key={todo.id} todo={todo} resetPage={this.resetPage} />)}
                 {this.props.todos.length === 0 && <Card description="There are no todos :(" className="fade-in"/>}
@@ -78,7 +90,8 @@ const ConnectedTodos = connect(state => {
         todos: state.todo.todos,
         filters: state.todoApi.filters,
         page: state.todoApi.page,
-        limit: state.todoApi.limit
+        limit: state.todoApi.limit,
+        sort: state.todoApi.sort
     };
 }, dispatch => {
     return {

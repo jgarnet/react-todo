@@ -2,7 +2,8 @@ const todoApiDefaultState = {
     filters: [],
     page: 1,
     limit: 5,
-    total: 0
+    total: 1,
+    sort: 'desc'
 };
 
 const todoApiReducer = (state = todoApiDefaultState, action) => {
@@ -25,6 +26,7 @@ const todoApiReducer = (state = todoApiDefaultState, action) => {
         case 'PAGE':
         case 'LIMIT':
         case 'TOTAL':
+        case 'SORT':
             return {
                 ...state,
                 [action.type.toLowerCase()]: action.value

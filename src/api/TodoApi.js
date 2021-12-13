@@ -12,12 +12,15 @@ const apiCall = (url, success, error, finalize, options = DEFAULT_OPTIONS) => {
         .finally(finalize);
 };
 const appendParams = (url, options) => {
-    const params = [{_order: 'desc'}, {_sort: 'date'}];
+    const params = [];
     if (!!options.filters) {
         params.push(...options.filters);
     }
     if (!!options.page && !!options.limit) {
         params.push({_page: options.page}, {_limit: options.limit})
+    }
+    if (!!options.sort) {
+        params.push({_sort: 'date'}, {_order: options.sort});
     }
     if (params.length > 0) {
         url += '?';
