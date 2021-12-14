@@ -13,7 +13,7 @@ const Todo = (props) => {
             updatedTodo.done = true;
             TodoApi.updateTodo(
                 updatedTodo,
-                () => props.markDone(props.todo),
+                props.onChange,
                 null,
                 () => setIsLoading(false)
             );
@@ -25,7 +25,7 @@ const Todo = (props) => {
             setIsLoading(true);
             TodoApi.removeTodo(props.todo.id, () => {
                 elem.classList.add('fade-out');
-                setTimeout(props.onRemove, 200);
+                setTimeout(props.onChange, 200);
             }, null, () => setIsLoading(false));
         }
     };
