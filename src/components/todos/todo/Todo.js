@@ -2,6 +2,7 @@ import './Todo.scss';
 import {Icon, Loader} from "semantic-ui-react";
 import TodoApi from "../../../api/TodoApi";
 import {useState} from "react";
+import {connect} from "react-redux";
 
 const Todo = (props) => {
     const [isLoading, setIsLoading] = useState(false);
@@ -10,7 +11,12 @@ const Todo = (props) => {
             setIsLoading(true);
             const updatedTodo = Object.assign({}, props.todo);
             updatedTodo.done = true;
-            TodoApi.updateTodo(updatedTodo, props.resetPage, null, () => setIsLoading(false));
+            TodoApi.updateTodo(
+                updatedTodo,
+                () => props.markDone(props.todo),
+                null,
+                () => setIsLoading(false)
+            );
         }
     };
     const removeTodo = () => {
@@ -19,7 +25,7 @@ const Todo = (props) => {
             setIsLoading(true);
             TodoApi.removeTodo(props.todo.id, () => {
                 elem.classList.add('fade-out');
-                setTimeout(props.resetPage, 200);
+                setTimeout(props.onRemove, 200);
             }, null, () => setIsLoading(false));
         }
     };
@@ -41,4 +47,10 @@ const Todo = (props) => {
     );
 };
 
-export default Todo;
+export default connect(() => {
+    return {};
+}, dispatch => {
+    return {
+        markDone: todo => dispatch({type: 'DONE', todo})
+    };
+})(Todo);

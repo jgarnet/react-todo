@@ -52,6 +52,10 @@ class Todos extends React.Component {
             .getCount(this.props.filters, () => {}, () => this.setState({isLoading: false}))
             .then(totalCount => {
                 this.props.setTotal(Math.max(1, Math.ceil(totalCount / this.props.limit)));
+                if (this.props.page > this.props.total) {
+                    this.props.setPage(this.props.total);
+                    this.fetchTodos();
+                }
             });
     }
     changePage(page) {
@@ -73,7 +77,7 @@ class Todos extends React.Component {
                     <SortTodos/>
                 </div>
                 <Divider/>
-                {this.props.todos.map(todo => <Todo key={todo.id} todo={todo} resetPage={this.resetPage} />)}
+                {this.props.todos.map(todo => <Todo key={todo.id} todo={todo} onRemove={this.fetchCount} />)}
                 {this.props.todos.length === 0 && <Card description="There are no todos :(" className="fade-in"/>}
                 <Divider/>
                 <PaginateTodos onPageChange={page => this.changePage(page)}/>
@@ -91,7 +95,8 @@ const ConnectedTodos = connect(state => {
         filters: state.todoApi.filters,
         page: state.todoApi.page,
         limit: state.todoApi.limit,
-        sort: state.todoApi.sort
+        sort: state.todoApi.sort,
+        total: state.todoApi.total
     };
 }, dispatch => {
     return {

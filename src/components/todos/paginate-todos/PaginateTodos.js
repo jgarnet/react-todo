@@ -24,6 +24,8 @@ class PaginateTodos extends React.Component {
     }
     render() {
         return <Pagination
+            siblingRange={0}
+            boundaryRange={0}
             totalPages={this.state.totalPages}
             activePage={this.state.currentPage}
             onPageChange={(e, d) => this.changePage(d.activePage)}/>;
