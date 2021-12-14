@@ -77,7 +77,7 @@ class Todos extends React.Component {
                     <SortTodos/>
                 </div>
                 <Divider/>
-                {this.props.todos.map(todo => <Todo key={todo.id} todo={todo} onRemove={this.fetchCount} />)}
+                {this.props.todos.map(todo => <Todo key={todo.id} todo={todo} onRemove={this.fetchTodos} />)}
                 {this.props.todos.length === 0 && <Card description="There are no todos :(" className="fade-in"/>}
                 <Divider/>
                 <PaginateTodos onPageChange={page => this.changePage(page)}/>
