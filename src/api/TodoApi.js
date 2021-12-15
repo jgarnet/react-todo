@@ -4,8 +4,8 @@ const DEFAULT_OPTIONS = {
         'Content-Type': 'application/json'
     }
 };
-const apiCall = (url, options = DEFAULT_OPTIONS) => {
-    return fetch(url, options);
+const apiCall = (url, options) => {
+    return fetch(url, {...DEFAULT_OPTIONS, ...options});
 };
 const appendParams = (url, options) => {
     if (!!options) {
@@ -28,21 +28,18 @@ const TodoApi = {
     },
     addTodo: (todo) => {
         return apiCall(`${process.env.REACT_APP_API_URL}/todos`, {
-            ...DEFAULT_OPTIONS,
             method: 'POST',
             body: JSON.stringify(todo)
         }).then(res => res.json());
     },
     updateTodo: (todo) => {
         return apiCall(`${process.env.REACT_APP_API_URL}/todos/${todo.id}`, {
-            ...DEFAULT_OPTIONS,
             method: 'PUT',
             body: JSON.stringify(todo)
         }).then(res => res.json());
     },
     removeTodo: (id) => {
         return apiCall(`${process.env.REACT_APP_API_URL}/todos/${id}`, {
-            ...DEFAULT_OPTIONS,
             method: 'DELETE'
         }).then(res => res.json());
     }
