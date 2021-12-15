@@ -15,12 +15,12 @@ const AddTodo = (props) => {
         } else if (!isLoading) {
             setIsLoading(true);
             const newTodo = {id: uuidv4(), text: todo.trim(), done: false, date: new Date().toUTCString()};
-            TodoApi.addTodo(newTodo, todo => {
+            TodoApi.addTodo(newTodo).then(() => {
                 setError(null);
                 setTodo('');
                 document.querySelector('input[name=add-todo]').value = '';
                 props.onAdd();
-            }, e => setError(e), () => setIsLoading(false));
+            }).catch(e => setError(e)).finally(() => setIsLoading(false));
         }
     };
     const onKeyDown = e => {

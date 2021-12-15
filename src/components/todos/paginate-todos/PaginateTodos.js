@@ -9,7 +9,6 @@ class PaginateTodos extends React.Component {
             totalPages: 1,
             currentPage: props.page
         };
-        this.changePage = this.changePage.bind(this);
     }
     componentDidUpdate(prevProps, prevState, snapshot) {
         if (prevProps.total !== this.props.total) {
@@ -19,16 +18,13 @@ class PaginateTodos extends React.Component {
             this.setState({currentPage: this.props.page});
         }
     }
-    changePage(page) {
-        this.props.onPageChange(page);
-    }
     render() {
         return <Pagination
             siblingRange={0}
             boundaryRange={0}
             totalPages={this.state.totalPages}
             activePage={this.state.currentPage}
-            onPageChange={(e, d) => this.changePage(d.activePage)}/>;
+            onPageChange={(e, d) => this.props.changePage(d.activePage)}/>;
     }
 }
 
@@ -39,7 +35,9 @@ const ConnectedPaginateTodos = connect(state => {
         total: state.todoApi.total
     };
 }, dispatch => {
-    return {};
+    return {
+        changePage: page => dispatch({type: 'PAGE', value: page})
+    };
 })(PaginateTodos);
 
 export default ConnectedPaginateTodos;

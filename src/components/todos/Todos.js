@@ -17,7 +17,6 @@ class Todos extends React.Component {
         };
         this.fetchTodos = this.fetchTodos.bind(this);
         this.fetchCount = this.fetchCount.bind(this);
-        this.changePage = this.changePage.bind(this);
         this.resetPage = this.resetPage.bind(this);
     }
     componentDidMount() {
@@ -31,39 +30,34 @@ class Todos extends React.Component {
         }
     }
     fetchTodos() {
-        // todo: decouple sort from date & make it more dynamic
-        // todo: add useStore() to TodoApi to simplify API
-        const options = {
-            filters: this.props.filters,
-            page: this.props.page,
-            limit: this.props.limit,
-            sort: this.props.sort
+        // todo: decouple sort from date & make it more dynamic?
+        let options = {
+            ...this.props.filters,
+            _page: this.props.page,
+            _limit: this.props.limit,
+            _sort: 'date',
+            _order: this.props.sort,
         };
         this.setState({isLoading: true});
-        TodoApi.getTodos(todos => {
-            this.props.setTodos(todos);
-            this.fetchCount();
-        }, () => this.setState({isLoading: false}),
-            () => {},
-            options);
+        TodoApi.getTodos(options).then(todos => {
+                this.props.setTodos(todos);
+                this.fetchCount();
+            }).finally(() => this.setState({isLoading: false}));
     }
     fetchCount() {
         TodoApi
-            .getCount(this.props.filters, () => {}, () => this.setState({isLoading: false}))
+            .getCount(this.props.filters)
             .then(totalCount => {
                 this.props.setTotal(Math.max(1, Math.ceil(totalCount / this.props.limit)));
                 if (this.props.page > this.props.total) {
                     this.props.setPage(this.props.total);
                     this.fetchTodos();
                 }
-            });
-    }
-    changePage(page) {
-        this.props.setPage(page);
+            }).finally(() => this.setState({isLoading: false}));
     }
     resetPage() {
         this.fetchTodos();
-        this.changePage(1);
+        this.props.setPage(1);
     }
     render() {
         return (
@@ -80,7 +74,7 @@ class Todos extends React.Component {
                 {this.props.todos.map(todo => <Todo key={todo.id} todo={todo} onChange={this.fetchTodos} />)}
                 {this.props.todos.length === 0 && <Card description="There are no todos :(" className="fade-in"/>}
                 <Divider/>
-                <PaginateTodos onPageChange={page => this.changePage(page)}/>
+                <PaginateTodos/>
                 <Divider/>
                 <AddTodo onAdd={this.resetPage} />
                 <Loader active={this.state.isLoading} />

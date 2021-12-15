@@ -11,22 +11,20 @@ const Todo = (props) => {
             setIsLoading(true);
             const updatedTodo = Object.assign({}, props.todo);
             updatedTodo.done = true;
-            TodoApi.updateTodo(
-                updatedTodo,
-                props.onChange,
-                null,
-                () => setIsLoading(false)
-            );
+            TodoApi
+                .updateTodo(updatedTodo)
+                .then(props.onChange)
+                .finally(() => setIsLoading(false));
         }
     };
     const removeTodo = () => {
         const elem = document.querySelector(`div[id='${props.todo.id}']`);
         if (!isLoading && !!elem) {
             setIsLoading(true);
-            TodoApi.removeTodo(props.todo.id, () => {
+            TodoApi.removeTodo(props.todo.id).then(() => {
                 elem.classList.add('fade-out');
                 setTimeout(props.onChange, 200);
-            }, null, () => setIsLoading(false));
+            }).finally(() => setIsLoading(false));
         }
     };
     return (

@@ -4,65 +4,47 @@ const DEFAULT_OPTIONS = {
         'Content-Type': 'application/json'
     }
 };
-const apiCall = (url, success, error, finalize, options = DEFAULT_OPTIONS) => {
-    fetch(url, options)
-        .then(res => res.json())
-        .then(success)
-        .catch(error)
-        .finally(finalize);
+const apiCall = (url, options = DEFAULT_OPTIONS) => {
+    return fetch(url, options);
 };
 const appendParams = (url, options) => {
-    const params = [];
-    if (!!options.filters) {
-        params.push(...options.filters);
-    }
-    if (!!options.page && !!options.limit) {
-        params.push({_page: options.page}, {_limit: options.limit})
-    }
-    if (!!options.sort) {
-        params.push({_sort: 'date'}, {_order: options.sort});
-    }
-    if (params.length > 0) {
+    if (!!options) {
         url += '?';
-        params.forEach(filter => {
-            for (const [key, value] of Object.entries(filter)) {
-                url += `${key}=${value}&`;
-            }
-        });
+        for (const [key, value] of Object.entries(options)) {
+            url += `${key}=${value}&`;
+        }
         url = url.substring(0, url.length - 1);
     }
     return url;
 };
 const defaultUrl = `${process.env.REACT_APP_API_URL}/todos`;
 const TodoApi = {
-    getTodos: (success, error, finalize, options) => {
-        apiCall(appendParams(defaultUrl, options), success, error, finalize)
+    getTodos: (options) => {
+        return apiCall(appendParams(defaultUrl, options)).then(res => res.json());
     },
-    getCount: (filters, error, finalize) => {
-        return fetch(appendParams(defaultUrl, {filters, limit: 1, page: 1}))
-            .then(res => res.headers.get('X-Total-Count'))
-            .catch(error)
-            .finally(finalize);
+    getCount: (filters) => {
+        return fetch(appendParams(defaultUrl, {...filters, _limit: 1, _page: 1}))
+            .then(res => res.headers.get('X-Total-Count'));
     },
-    addTodo: (todo, success, error, finalize) => {
-        apiCall(`${process.env.REACT_APP_API_URL}/todos`, success, error, finalize, {
+    addTodo: (todo) => {
+        return apiCall(`${process.env.REACT_APP_API_URL}/todos`, {
             ...DEFAULT_OPTIONS,
             method: 'POST',
             body: JSON.stringify(todo)
-        });
+        }).then(res => res.json());
     },
-    updateTodo: (todo, success, error, finalize) => {
-        apiCall(`${process.env.REACT_APP_API_URL}/todos/${todo.id}`, success, error, finalize, {
+    updateTodo: (todo) => {
+        return apiCall(`${process.env.REACT_APP_API_URL}/todos/${todo.id}`, {
             ...DEFAULT_OPTIONS,
             method: 'PUT',
             body: JSON.stringify(todo)
-        });
+        }).then(res => res.json());
     },
-    removeTodo: (id, success, error, finalize) => {
-        apiCall(`${process.env.REACT_APP_API_URL}/todos/${id}`, success, error, finalize, {
+    removeTodo: (id) => {
+        return apiCall(`${process.env.REACT_APP_API_URL}/todos/${id}`, {
             ...DEFAULT_OPTIONS,
             method: 'DELETE'
-        });
+        }).then(res => res.json());
     }
 };
 

@@ -1,11 +1,12 @@
+import './FilterTodos.scss';
 import React from "react";
 import {connect} from "react-redux";
 import {Button, Icon} from "semantic-ui-react";
 
 const selectionFilters = {
-    all: [],
-    todo: [{done: false}],
-    done: [{done: true}]
+    all: {},
+    todo: {done: false},
+    done: {done: true}
 };
 
 class FilterTodos extends React.Component {
@@ -21,7 +22,7 @@ class FilterTodos extends React.Component {
             this.setState({
                 selected: selection
             });
-            this.props.setFilters([...selectionFilters[selection]]);
+            this.props.setFilters({...selectionFilters[selection]});
         }
     }
     render() {
@@ -29,15 +30,16 @@ class FilterTodos extends React.Component {
             <div>
                 <Icon name='filter'/>
                 <Button.Group>
-                    <Button
-                        active={this.state.selected === 'all'}
-                        onClick={() => this.handleSelect('all')}>All</Button>
-                    <Button
-                        active={this.state.selected === 'todo'}
-                        onClick={() => this.handleSelect('todo')}>Todo</Button>
-                    <Button
-                        active={this.state.selected === 'done'}
-                        onClick={() => this.handleSelect('done')}>Done</Button>
+                    {Object.keys(selectionFilters).map(filter => {
+                        return (
+                        <Button
+                            key={filter}
+                            active={this.state.selected === filter}
+                            onClick={() => this.handleSelect(filter)}>
+                            <span className='capitalize'>{filter}</span>
+                        </Button>
+                        );
+                    })}
                 </Button.Group>
             </div>
         );
