@@ -3,7 +3,8 @@ const todoApiDefaultState = {
     page: 1,
     limit: 5,
     total: 1,
-    sort: 'desc'
+    sort: 'desc',
+    isLoading: false
 };
 
 const todoApiReducer = (state = todoApiDefaultState, action) => {
@@ -12,6 +13,11 @@ const todoApiReducer = (state = todoApiDefaultState, action) => {
             return {
                 ...state,
                 filters: action.filters
+            };
+        case 'LOADING':
+            return {
+                ...state,
+                isLoading: action.value
             };
         case 'PAGE':
         case 'LIMIT':

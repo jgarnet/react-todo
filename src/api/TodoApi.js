@@ -19,8 +19,13 @@ const appendParams = (url, options) => {
 };
 const defaultUrl = `${process.env.REACT_APP_API_URL}/todos`;
 const TodoApi = {
-    getTodos: (options) => {
-        return apiCall(appendParams(defaultUrl, options)).then(res => res.json());
+    getTodos: async (options) => {
+        const response = await apiCall(appendParams(defaultUrl, options));
+        const todos = await response.json();
+        return {
+            todos,
+            totalCount: response.headers.get('X-Total-Count')
+        };
     },
     getCount: (filters) => {
         return fetch(appendParams(defaultUrl, {...filters, _limit: 1, _page: 1}))

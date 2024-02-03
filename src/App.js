@@ -1,5 +1,5 @@
 import './App.css';
-import Todos from "./components/todos/Todos";
+import Todos from "./components/Todos/Todos";
 import configureStore from "./store/configureStore";
 import {Provider} from "react-redux";
 

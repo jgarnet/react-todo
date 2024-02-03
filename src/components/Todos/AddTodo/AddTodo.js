@@ -4,11 +4,16 @@ import './AddTodo.scss';
 import {Icon, Input, Loader, Message} from "semantic-ui-react";
 import {v4 as uuidv4} from 'uuid';
 import TodoApi from "../../../api/TodoApi";
+import useFetchTodos from "../../../hooks/useFetchTodos";
 
-const AddTodo = (props) => {
+const AddTodo = () => {
+    // state
     const [todo, setTodo] = useState('');
     const [error, setError] = useState(null);
     const [isLoading, setIsLoading] = useState(false);
+    // hooks
+    const fetchTodos = useFetchTodos();
+    // actions
     const addTodo = () => {
         if (!!!todo || todo.trim() === '') {
             setError('Todo cannot be empty');
@@ -19,7 +24,7 @@ const AddTodo = (props) => {
                 setError(null);
                 setTodo('');
                 document.querySelector('input[name=add-todo]').value = '';
-                props.onAdd();
+                fetchTodos();
             }).catch(e => setError(e)).finally(() => setIsLoading(false));
         }
     };
