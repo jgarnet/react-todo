@@ -1,21 +1,22 @@
-import {useState} from "react";
-import {connect} from "react-redux";
+import {useRef, useState} from 'react';
+import {connect} from 'react-redux';
 import './AddTodo.scss';
-import {Icon, Input, Loader, Message} from "semantic-ui-react";
+import {Icon, Input, Loader, Message} from 'semantic-ui-react';
 import {v4 as uuidV4} from 'uuid';
-import TodoApi from "../../../api/TodoApi";
-import useFetchTodos from "../../../hooks/useFetchTodos";
+import TodoApi from '../../../api/TodoApi';
+import useFetchTodos from '../../../hooks/useFetchTodos';
 
-const AddTodo = () => {
+const AddTodo = (props) => {
     // state
+    const { isLoading, setIsLoading } = props;
     const [todo, setTodo] = useState('');
     const [error, setError] = useState(null);
-    const [isLoading, setIsLoading] = useState(false);
     // hooks
     const fetchTodos = useFetchTodos();
+    const inputRef = useRef(null);
     // actions
     const addTodo = () => {
-        if (!!!todo || todo.trim() === '') {
+        if (!todo || todo.trim() === '') {
             setError('Todo cannot be empty');
         } else if (!isLoading) {
             setIsLoading(true);
@@ -23,8 +24,7 @@ const AddTodo = () => {
             TodoApi.addTodo(newTodo).then(() => {
                 setError(null);
                 setTodo('');
-                document.querySelector('input[name=add-todo]').value = '';
-                fetchTodos();
+                fetchTodos().finally(() => inputRef.current.focus());
             }).catch(e => setError(e)).finally(() => setIsLoading(false));
         }
     };
@@ -35,25 +35,30 @@ const AddTodo = () => {
     };
     return (
         <div className="add-todo">
-            {error && <Message negative className="fade-in"><p>{error}</p></Message>}
             <Input
-                icon={<Icon name="plus" link onClick={addTodo} disabled={todo.trim().length === 0}/>}
+                data-testid='Add Todo'
+                ref={inputRef}
+                icon={<Icon data-testid='Add Todo Icon' name="plus" link onClick={addTodo} disabled={todo.trim().length === 0}/>}
                 onKeyDown={onKeyDown}
                 onChange={e => setTodo(e.target.value)}
                 name="add-todo"
                 placeholder="Add Todo"
                 disabled={isLoading}
+                value={todo}
             />
             <Loader active={isLoading}/>
+            {error && <Message data-testid='Add Todo Error' negative className="fade-in"><p>{error}</p></Message>}
         </div>
     );
 };
 
 const ConnectedAddTodo = connect(state => {
-    return {};
+    return {
+        isLoading: state.todoApi.isLoading
+    };
 }, dispatch => {
     return {
-        addTodo: todo => dispatch({type: 'ADD', todo})
+        setIsLoading: isLoading => dispatch({ type: 'LOADING', value: isLoading })
     };
 })(AddTodo);
 

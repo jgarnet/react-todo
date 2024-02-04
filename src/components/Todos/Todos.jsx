@@ -10,9 +10,7 @@ import SortTodos from "./SortTodos/SortTodos";
 import useFetchTodos from "../../hooks/useFetchTodos";
 
 const Todos = props => {
-
     // state
-
     const {
         filters = {},
         sort = 'asc',
@@ -23,16 +21,14 @@ const Todos = props => {
         isLoading
     } = props;
     const [initialized, setInitialized] = useState(false);
-
     // hooks
-
     const fetchTodos = useFetchTodos();
-
+    // component mount
     useEffect(() => {
         fetchTodos().finally(() => setInitialized(true));
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
-
+    // reset page and fetch todos when filters or sort change
     useEffect(() => {
         if (initialized) {
             if (page === 1) {
@@ -43,16 +39,14 @@ const Todos = props => {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [filters, sort]);
-
+    // fetch todos when page or limit changes
     useEffect(() => {
         if (initialized) {
             fetchTodos();
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [page, limit]);
-
     // helpers
-
     const resetPage = () => {
         setPage(1);
     };

@@ -2,7 +2,7 @@ import {cleanup, render, screen} from '@testing-library/react';
 import App from './App';
 
 jest.mock('./components/Todos/Todos', () => () => <div>Mock Todos</div>);
-jest.mock('./store/configureStore', () => () => {});
+jest.mock('./store/setupStore', () => () => {});
 jest.mock('react-redux', () => ({
   __esModule: true,
   Provider: jest.fn((props) => <div data-testid='Provider'>{props.children}</div>)
