@@ -17,7 +17,7 @@ const appendParams = (url, options) => {
     }
     return url;
 };
-const defaultUrl = `${process.env.REACT_APP_API_URL}/todos`;
+const defaultUrl = `${import.meta.env.VITE_APP_API_URL}/todos`;
 const TodoApi = {
     getTodos: async (options) => {
         const response = await apiCall(appendParams(defaultUrl, options));
@@ -32,19 +32,19 @@ const TodoApi = {
             .then(res => res.headers.get('X-Total-Count'));
     },
     addTodo: (todo) => {
-        return apiCall(`${process.env.REACT_APP_API_URL}/todos`, {
+        return apiCall(`${import.meta.env.VITE_APP_API_URL}/todos`, {
             method: 'POST',
             body: JSON.stringify(todo)
         }).then(res => res.json());
     },
     updateTodo: (todo) => {
-        return apiCall(`${process.env.REACT_APP_API_URL}/todos/${todo.id}`, {
+        return apiCall(`${import.meta.env.VITE_APP_API_URL}/todos/${todo.id}`, {
             method: 'PUT',
             body: JSON.stringify(todo)
         }).then(res => res.json());
     },
     removeTodo: (id) => {
-        return apiCall(`${process.env.REACT_APP_API_URL}/todos/${id}`, {
+        return apiCall(`${import.meta.env.VITE_APP_API_URL}/todos/${id}`, {
             method: 'DELETE'
         }).then(res => res.json());
     }
