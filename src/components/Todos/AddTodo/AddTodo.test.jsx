@@ -3,7 +3,7 @@ import {Provider} from 'react-redux';
 import AddTodo from './AddTodo';
 import setupStore from '../../../store/setupStore';
 
-let mockFetchTodos = {
+const mockFetchTodos = {
     pass: true,
     data: {},
     error: null
@@ -18,10 +18,18 @@ jest.mock('../../../hooks/useFetchTodos', () => () => {
 const mockInvocations = {
     addTodo: []
 };
+const mockAddTodo = {
+    pass: true,
+    error: null
+};
 jest.mock('../../../api/TodoApi', () => ({
     addTodo: todo => {
         mockInvocations.addTodo.push(todo);
-        return Promise.resolve(todo);
+        if (mockAddTodo.pass) {
+            return Promise.resolve(todo);
+        } else {
+            return Promise.reject(mockAddTodo.error);
+        }
     }
 }));
 
@@ -30,6 +38,11 @@ describe('AddTodo tests', () => {
     afterEach(() => {
         cleanup();
         mockInvocations.addTodo = [];
+        mockFetchTodos.pass = true;
+        mockFetchTodos.error = null;
+        mockFetchTodos.data = {};
+        mockAddTodo.pass = true;
+        mockAddTodo.error = null;
     });
     const store = setupStore({
         todoApi: {
@@ -91,6 +104,22 @@ describe('AddTodo tests', () => {
                 const error = await screen.getByTestId('Add Todo Error');
                 expect(mockInvocations.addTodo.length === 0).toBeTruthy();
                 expect(error).toBeInTheDocument();
+            });
+        });
+    });
+
+    it('should display error when Add Todo call fails', async () => {
+        mockAddTodo.pass = false;
+        mockAddTodo.error = 'Test Error';
+        _render();
+        const input = screen.getByTestId('Add Todo').children[0];
+        await act(async () => {
+            await fireEvent.change(input, { target: { value: 'Test' } });
+            await fireEvent.keyDown(input, {key: 'Enter', code: 'Enter', keyCode: 13});
+            await waitFor(async () => {
+                const error = await screen.getByTestId('Add Todo Error');
+                expect(error).toBeInTheDocument();
+                expect(error).toHaveTextContent('Test Error');
             });
         });
     });
