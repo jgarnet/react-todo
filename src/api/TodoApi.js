@@ -1,3 +1,5 @@
+import getEnvProperty from "../utils/getEnvProperty";
+
 const DEFAULT_OPTIONS = {
     method: 'GET',
     headers: {
@@ -17,7 +19,7 @@ const appendParams = (url, options) => {
     }
     return url;
 };
-const defaultUrl = `${import.meta.env.VITE_APP_API_URL}/todos`;
+const defaultUrl = `${getEnvProperty('VITE_APP_API_URL')}/todos`;
 const TodoApi = {
     getTodos: async (options) => {
         const response = await apiCall(appendParams(defaultUrl, options));
@@ -27,24 +29,20 @@ const TodoApi = {
             totalCount: response.headers.get('X-Total-Count')
         };
     },
-    getCount: (filters) => {
-        return fetch(appendParams(defaultUrl, {...filters, _limit: 1, _page: 1}))
-            .then(res => res.headers.get('X-Total-Count'));
-    },
     addTodo: (todo) => {
-        return apiCall(`${import.meta.env.VITE_APP_API_URL}/todos`, {
+        return apiCall(defaultUrl, {
             method: 'POST',
             body: JSON.stringify(todo)
         }).then(res => res.json());
     },
     updateTodo: (todo) => {
-        return apiCall(`${import.meta.env.VITE_APP_API_URL}/todos/${todo.id}`, {
+        return apiCall(`${defaultUrl}/${todo.id}`, {
             method: 'PUT',
             body: JSON.stringify(todo)
         }).then(res => res.json());
     },
     removeTodo: (id) => {
-        return apiCall(`${import.meta.env.VITE_APP_API_URL}/todos/${id}`, {
+        return apiCall(`${defaultUrl}/${id}`, {
             method: 'DELETE'
         }).then(res => res.json());
     }

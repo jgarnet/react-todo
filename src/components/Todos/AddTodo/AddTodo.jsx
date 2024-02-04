@@ -2,7 +2,7 @@ import {useState} from "react";
 import {connect} from "react-redux";
 import './AddTodo.scss';
 import {Icon, Input, Loader, Message} from "semantic-ui-react";
-import {v4 as uuidv4} from 'uuid';
+import {v4 as uuidV4} from 'uuid';
 import TodoApi from "../../../api/TodoApi";
 import useFetchTodos from "../../../hooks/useFetchTodos";
 
@@ -19,7 +19,7 @@ const AddTodo = () => {
             setError('Todo cannot be empty');
         } else if (!isLoading) {
             setIsLoading(true);
-            const newTodo = {id: uuidv4(), text: todo.trim(), done: false, date: new Date().toUTCString()};
+            const newTodo = {id: uuidV4(), text: todo.trim(), done: false, date: new Date().toUTCString()};
             TodoApi.addTodo(newTodo).then(() => {
                 setError(null);
                 setTodo('');
