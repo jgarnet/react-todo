@@ -1,26 +1,19 @@
-import {connect} from "react-redux";
+import {useDispatch, useSelector} from "react-redux";
 import {Button, Icon} from "semantic-ui-react";
 
-const SortTodos = props => {
+const SortTodos = () => {
+    const sort = useSelector(state => state.todoApi.sort);
+    const dispatch = useDispatch();
+    const setSort = sort => dispatch({type: 'SORT', value: sort});
     return (
         <div>
             <Icon name='sort'/>
             <Button.Group>
-                <Button active={props.sort === 'asc'} onClick={() => props.setSort('asc')}>ASC</Button>
-                <Button active={props.sort === 'desc'} onClick={() => props.setSort('desc')}>DESC</Button>
+                <Button data-testid='sort-asc' active={sort === 'asc'} onClick={() => setSort('asc')}>ASC</Button>
+                <Button data-testid='sort-desc' active={sort === 'desc'} onClick={() => setSort('desc')}>DESC</Button>
             </Button.Group>
         </div>
     );
 };
 
-const ConnectedSortTodos = connect(state => {
-    return {
-        sort: state.todoApi.sort
-    };
-}, dispatch => {
-    return {
-        setSort: sort => dispatch({type: 'SORT', value: sort})
-    };
-})(SortTodos);
-
-export default ConnectedSortTodos;
+export default SortTodos;
