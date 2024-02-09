@@ -1,6 +1,6 @@
 import './FilterTodos.scss';
-import React from "react";
-import {connect} from "react-redux";
+import React, {useState} from "react";
+import {useDispatch} from "react-redux";
 import {Button, Icon} from "semantic-ui-react";
 
 const selectionFilters = {
@@ -9,49 +9,34 @@ const selectionFilters = {
     done: {done: true}
 };
 
-class FilterTodos extends React.Component {
-    constructor(props) {
-        super(props);
-        this.state = {
-            selected: 'all'
-        };
-        this.handleSelect = this.handleSelect.bind(this);
-    }
-    handleSelect(selection) {
-        if (this.state.selected !== selection) {
-            this.setState({
-                selected: selection
-            });
-            this.props.setFilters({...selectionFilters[selection]});
+const FilterTodos = () => {
+    const dispatch = useDispatch();
+    const setFilters = filters => dispatch({type: 'SET_FILTERS', filters});
+    const [selected, setSelected] = useState('all');
+    const handleSelect = selection => {
+        if (selected !== selection) {
+            setSelected(selection);
+            setFilters({...selectionFilters[selection]});
         }
     }
-    render() {
-        return (
-            <div>
-                <Icon name='filter'/>
-                <Button.Group>
-                    {Object.keys(selectionFilters).map(filter => {
-                        return (
+    return (
+        <div>
+            <Icon name='filter'/>
+            <Button.Group>
+                {Object.keys(selectionFilters).map(filter => {
+                    return (
                         <Button
+                            data-testid={`filter-${filter}`}
                             key={filter}
-                            active={this.state.selected === filter}
-                            onClick={() => this.handleSelect(filter)}>
+                            active={selected === filter}
+                            onClick={() => handleSelect(filter)}>
                             <span className='capitalize'>{filter}</span>
                         </Button>
-                        );
-                    })}
-                </Button.Group>
-            </div>
-        );
-    }
-}
+                    );
+                })}
+            </Button.Group>
+        </div>
+    );
+};
 
-const ConnectedFilterTodos = connect(state => {
-    return {};
-}, dispatch => {
-    return {
-        setFilters: filters => dispatch({type: 'SET_FILTERS', filters})
-    };
-})(FilterTodos);
-
-export default ConnectedFilterTodos;
+export default FilterTodos;
