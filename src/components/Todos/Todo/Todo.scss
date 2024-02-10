@@ -45,25 +45,21 @@ div.todo {
   }
 }
 div.todo.done {
-  opacity: 0.5;
   div.todo-check {
     background: #fff;
     color: #000;
     cursor: default;
+    opacity: 1;
   }
   div.todo-box {
     border-radius: 0 5px 5px 0;
   }
 }
-
 .hover-fade {
   transition: all linear 200ms;
 }
 .hover-fade:hover {
   opacity: 0.5;
-}
-div.todo.done .hover-fade {
-  opacity: 1;
 }
 
 @media screen and (max-width: 500px) {
