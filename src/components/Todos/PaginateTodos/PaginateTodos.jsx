@@ -11,6 +11,7 @@ const PaginateTodos = () => {
     const changePage = page => dispatch({type: 'PAGE', value: page});
     useEffect(() => {}, [currentPage]);
     return <Pagination
+        data-testid='pagination'
         siblingRange={0}
         boundaryRange={0}
         totalPages={totalPages}

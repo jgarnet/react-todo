@@ -13,7 +13,7 @@ const Todos = () => {
     // state
     const {
         filters = {},
-        sort = 'asc',
+        sort = 'desc',
         limit = 10,
         page = 1,
         todos = [],
@@ -71,7 +71,7 @@ const Todos = () => {
             </div>
             <Divider/>
             {todos.map(todo => <Todo key={todo.id} todo={todo} onChange={fetchTodos} />)}
-            {todos.length === 0 && <Card description="There are no todos :(" className="fade-in"/>}
+            {todos.length === 0 && <Card data-testid='todos-empty' description="There are no todos :(" className="fade-in"/>}
             <Divider/>
             <PaginateTodos/>
             <Divider/>

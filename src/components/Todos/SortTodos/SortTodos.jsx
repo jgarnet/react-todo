@@ -6,7 +6,7 @@ const SortTodos = () => {
     const dispatch = useDispatch();
     const setSort = sort => dispatch({type: 'SORT', value: sort});
     return (
-        <div>
+        <div data-testid='sort'>
             <Icon name='sort'/>
             <Button.Group>
                 <Button data-testid='sort-asc' active={sort === 'asc'} onClick={() => setSort('asc')}>ASC</Button>

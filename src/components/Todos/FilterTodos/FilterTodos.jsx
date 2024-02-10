@@ -20,7 +20,7 @@ const FilterTodos = () => {
         }
     }
     return (
-        <div>
+        <div data-testid='filter'>
             <Icon name='filter'/>
             <Button.Group>
                 {Object.keys(selectionFilters).map(filter => {
