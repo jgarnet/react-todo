@@ -2,11 +2,12 @@ import axios from 'axios';
 import TodoApi from './TodoApi';
 
 jest.mock('axios');
-jest.mock('../utils/getEnvProperty', () => () => 'localhost');
+jest.mock('@/utils/getEnvProperty', () => () => 'localhost');
 
 describe('TodoApi', () => {
     it('should append query params on getTodos call and return expected payload', async () => {
         const options = { done: true, _order: 'asc', _sort: 'date' };
+        // @ts-ignore
         axios.mockResolvedValue({
             headers: new Map([
                 ['X-Total-Count', 0]
@@ -26,6 +27,7 @@ describe('TodoApi', () => {
     it('should send JSON todo on addTodo and return expected payload', async () => {
         const todo = { text: 'Test Todo', done: false };
         const result = { id: '1', text: 'Test Todo', done: false };
+        // @ts-ignore
         axios.mockResolvedValue({
             data: result
         });
@@ -42,6 +44,7 @@ describe('TodoApi', () => {
     it('should send JSON todo on updateTodo and return expected payload', async () => {
         const todo = { id: '1', text: 'Test Todo', done: true };
         const result = { id: '1', text: 'Test Todo', done: true };
+        // @ts-ignore
         axios.mockResolvedValue({
             data: result
         });
@@ -58,6 +61,7 @@ describe('TodoApi', () => {
     it('should send todo ID on removeTodo and return expected payload', async () => {
         const todo = { id: '1', text: 'Test Todo', done: true };
         const result = {};
+        // @ts-ignore
         axios.mockResolvedValue({
             data: result
         });

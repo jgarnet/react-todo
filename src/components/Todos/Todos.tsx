@@ -1,13 +1,14 @@
-import React, {useEffect, useState} from "react";
-import Todo from "./Todo/Todo";
-import AddTodo from "./AddTodo/AddTodo";
-import {useDispatch, useSelector} from "react-redux";
+import React, {useEffect, useState} from 'react';
+import Todo from './Todo/Todo';
+import AddTodo from './AddTodo/AddTodo';
+import {useDispatch, useSelector} from 'react-redux';
 import './Todos.scss';
-import {Card, Divider, Header, Icon, Loader} from "semantic-ui-react";
-import FilterTodos from "./FilterTodos/FilterTodos";
-import PaginateTodos from "./PaginateTodos/PaginateTodos";
-import SortTodos from "./SortTodos/SortTodos";
-import useFetchTodos from "../../hooks/useFetchTodos";
+import {Card, Divider, Header, Icon, Loader} from 'semantic-ui-react';
+import FilterTodos from './FilterTodos/FilterTodos';
+import PaginateTodos from './PaginateTodos/PaginateTodos';
+import SortTodos from './SortTodos/SortTodos';
+import useFetchTodos from '@/hooks/useFetchTodos';
+import {GlobalState} from '@/types/globalStore';
 
 const Todos = () => {
     // state
@@ -18,7 +19,7 @@ const Todos = () => {
         page = 1,
         todos = [],
         isLoading
-    } = useSelector(state => ({
+    } = useSelector((state: GlobalState) => ({
         filters: state.todoApi.filters,
         sort: state.todoApi.sort,
         limit: state.todoApi.limit,
@@ -27,7 +28,7 @@ const Todos = () => {
         isLoading: state.todoApi.isLoading
     }));
     const dispatch = useDispatch();
-    const setPage = page => dispatch({type: 'PAGE', value: page});
+    const setPage = (page: number) => dispatch({type: 'PAGE', value: page});
     const [initialized, setInitialized] = useState(false);
     // hooks
     const fetchTodos = useFetchTodos();

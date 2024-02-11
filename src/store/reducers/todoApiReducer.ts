@@ -1,4 +1,6 @@
-const todoApiDefaultState = {
+import {TodoApiAction, TodoApiState} from '@/types/todoApiStore';
+
+const todoApiDefaultState: TodoApiState = {
     filters: {},
     page: 1,
     limit: 5,
@@ -7,7 +9,7 @@ const todoApiDefaultState = {
     isLoading: false
 };
 
-const todoApiReducer = (state = todoApiDefaultState, action) => {
+const todoApiReducer = (state = todoApiDefaultState, action: TodoApiAction) => {
     switch (action.type) {
         case 'SET_FILTERS':
             return {

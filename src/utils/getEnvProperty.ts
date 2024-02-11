@@ -1,4 +1,4 @@
-const getEnvProperty = property => {
+const getEnvProperty = (property: string) => {
     return import.meta.env[property];
 };
 

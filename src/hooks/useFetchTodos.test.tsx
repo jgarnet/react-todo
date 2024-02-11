@@ -1,9 +1,11 @@
 import {cleanup, render, waitFor} from '@testing-library/react';
 import {Provider} from 'react-redux';
 import useFetchTodos from './useFetchTodos';
-import {useEffect} from 'react';
-import setupStore from '../store/setupStore';
-import TodoApi from '../api/TodoApi';
+import React, {useEffect} from 'react';
+import setupStore from '@/store/setupStore';
+import TodoApi from '@/api/TodoApi';
+import {Store} from 'redux';
+import {GlobalState} from '@/types/globalStore';
 
 const TestComponent = () => {
     const fetchTodos = useFetchTodos();
@@ -12,7 +14,8 @@ const TestComponent = () => {
     }, []);
     return (<div>&nbsp;</div>);
 };
-jest.mock('../api/TodoApi');
+jest.mock('@/api/TodoApi');
+jest.mock('@/utils/getEnvProperty', () => () => 'localhost');
 
 describe('useFetchTodos', () => {
     const mockStore = {
@@ -25,7 +28,7 @@ describe('useFetchTodos', () => {
             page: 1
         }
     };
-    let store;
+    let store: Store<GlobalState>;
     beforeEach(() => {
         mockStore.todoApi = {
             filters: {
@@ -47,6 +50,7 @@ describe('useFetchTodos', () => {
         todos: [],
         totalCount: 0
     };
+    // @ts-ignore
     TodoApi.getTodos.mockResolvedValue(mockResponse);
     it('should call TodoApi with expected options', () => {
         _render();

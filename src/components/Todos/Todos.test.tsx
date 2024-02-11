@@ -1,12 +1,16 @@
 import {act, cleanup, render, screen, waitFor} from '@testing-library/react';
 import {Provider} from 'react-redux';
 import Todos from './Todos';
-import setupStore from '../../store/setupStore';
+import setupStore from '@/store/setupStore';
+import {GlobalState} from '@/types/globalStore';
+import {Store} from 'redux';
+import React from 'react';
+import Todo from '@/types/todo';
 
 const mockFetchTodos = {
     invoked: 0
 };
-jest.mock('../../hooks/useFetchTodos', () => () => {
+jest.mock('@/hooks/useFetchTodos', () => () => {
     return () => {
         mockFetchTodos.invoked++;
         return Promise.resolve();
@@ -16,9 +20,10 @@ jest.mock('./SortTodos/SortTodos', () => () => <div data-testid='sort'>&nbsp;</d
 jest.mock('./FilterTodos/FilterTodos', () => () => <div data-testid='filter'>&nbsp;</div>);
 jest.mock('./PaginateTodos/PaginateTodos', () => () => <div data-testid='pagination'>&nbsp;</div>);
 jest.mock('./AddTodo/AddTodo', () => () => <div data-testid='add'>&nbsp;</div>);
+jest.mock('@/utils/getEnvProperty', () => () => 'localhost');
 
 describe('Todos', () => {
-    let store;
+    let store: Store<GlobalState>;
     beforeEach(() => {
         store = setupStore();
         mockFetchTodos.invoked = 0;
@@ -44,7 +49,7 @@ describe('Todos', () => {
         });
     });
     it('should render message when todos is empty', async () => {
-        const todos = [];
+        const todos: Todo[] = [];
         await act(async () => {
             store.dispatch({ type: 'SET', todos });
             _render();

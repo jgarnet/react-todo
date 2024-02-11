@@ -1,10 +1,12 @@
 import {act, cleanup, fireEvent, render, screen} from '@testing-library/react';
-import setupStore from '../../../store/setupStore';
+import setupStore from '@/store/setupStore';
 import {Provider} from 'react-redux';
 import PaginateTodos from './PaginateTodos';
+import React from 'react';
 
 jest.mock('semantic-ui-react', () => ({
     __esModule: true,
+    // @ts-ignore
     Pagination: ({ totalPages, activePage, onPageChange }) => {
         return (
             <div data-testid='mock-pagination'>
@@ -45,7 +47,8 @@ describe('PaginateTodos', () => {
         _render();
         const changePage = screen.queryByTestId('changePage');
         await act(async () => {
-            await fireEvent.click(changePage);
+            await fireEvent.click(changePage as Element);
+            // @ts-ignore
             expect(store.getState().todoApi.page).toEqual(2);
         });
     });

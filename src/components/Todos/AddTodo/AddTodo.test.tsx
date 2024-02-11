@@ -1,29 +1,31 @@
-import {cleanup, screen, render, fireEvent, act, waitFor} from '@testing-library/react';
+import {act, cleanup, fireEvent, render, screen, waitFor} from '@testing-library/react';
 import {Provider} from 'react-redux';
 import AddTodo from './AddTodo';
-import setupStore from '../../../store/setupStore';
+import setupStore from '@/store/setupStore';
+import Todo from '@/types/todo';
+import React from 'react';
 
 const mockFetchTodos = {
     pass: true,
     data: {},
     error: null
 };
-jest.mock('../../../hooks/useFetchTodos', () => () => {
+jest.mock('@/hooks/useFetchTodos', () => () => {
     if (mockFetchTodos.pass) {
         return () => Promise.resolve(mockFetchTodos.data);
     } else {
         return () => Promise.reject(mockFetchTodos.error);
     }
 });
-const mockInvocations = {
+const mockInvocations: { addTodo: Todo[] } = {
     addTodo: []
 };
-const mockAddTodo = {
+const mockAddTodo: { pass: boolean, error: string | null } = {
     pass: true,
     error: null
 };
-jest.mock('../../../api/TodoApi', () => ({
-    addTodo: todo => {
+jest.mock('@/api/TodoApi', () => ({
+    addTodo: (todo: Todo) => {
         mockInvocations.addTodo.push(todo);
         if (mockAddTodo.pass) {
             return Promise.resolve(todo);
@@ -56,7 +58,7 @@ describe('AddTodo tests', () => {
             </Provider>
         );
     };
-    const testSuccessfulAdd = async (input) => {
+    const testSuccessfulAdd = async (input: any) => {
         await waitFor(async () => {
             const error = await screen.queryByTestId('Add Todo Error');
             expect(error).not.toBeInTheDocument();
@@ -77,8 +79,8 @@ describe('AddTodo tests', () => {
         _render();
         const input = screen.getByTestId('Add Todo').children[0];
         await act(async () => {
-            await fireEvent.change(input, { target: { value: 'Test' } });
-            await fireEvent.keyDown(input, {key: 'Enter', code: 'Enter', keyCode: 13});
+            await fireEvent.change(input, {target: {value: 'Test'}});
+            await fireEvent.keyDown(input, {key: 'Enter', code: 'Enter'});
             await testSuccessfulAdd(input);
         });
     });
@@ -99,7 +101,7 @@ describe('AddTodo tests', () => {
         const input = screen.getByTestId('Add Todo').children[0];
         await act(async () => {
             await fireEvent.change(input, { target: { value: ' ' } });
-            await fireEvent.keyDown(input, {key: 'Enter', code: 'Enter', keyCode: 13});
+            await fireEvent.keyDown(input, {key: 'Enter', code: 'Enter'});
             await waitFor(async () => {
                 const error = await screen.getByTestId('Add Todo Error');
                 expect(mockInvocations.addTodo.length === 0).toBeTruthy();
@@ -115,7 +117,7 @@ describe('AddTodo tests', () => {
         const input = screen.getByTestId('Add Todo').children[0];
         await act(async () => {
             await fireEvent.change(input, { target: { value: 'Test' } });
-            await fireEvent.keyDown(input, {key: 'Enter', code: 'Enter', keyCode: 13});
+            await fireEvent.keyDown(input, {key: 'Enter', code: 'Enter'});
             await waitFor(async () => {
                 const error = await screen.getByTestId('Add Todo Error');
                 expect(error).toBeInTheDocument();

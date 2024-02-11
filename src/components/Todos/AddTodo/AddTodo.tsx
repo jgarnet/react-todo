@@ -1,19 +1,23 @@
-import {useRef, useState} from 'react';
-import {connect} from 'react-redux';
+import React, {useRef, useState} from 'react';
+import {useDispatch, useSelector} from 'react-redux';
 import './AddTodo.scss';
 import {Icon, Input, Loader, Message} from 'semantic-ui-react';
+// @ts-ignore
 import {v4 as uuidV4} from 'uuid';
-import TodoApi from '../../../api/TodoApi';
-import useFetchTodos from '../../../hooks/useFetchTodos';
+import TodoApi from '@/api/TodoApi';
+import useFetchTodos from '@/hooks/useFetchTodos';
+import {GlobalState} from '@/types/globalStore';
 
-const AddTodo = (props) => {
+const AddTodo = () => {
     // state
-    const { isLoading, setIsLoading } = props;
-    const [todo, setTodo] = useState('');
-    const [error, setError] = useState(null);
+    const isLoading = useSelector((state: GlobalState) => state.todoApi.isLoading);
+    const dispatch = useDispatch();
+    const setIsLoading = (isLoading: boolean) => dispatch({type: 'LOADING', value: isLoading});
+    const [todo, setTodo] = useState<string>('');
+    const [error, setError] = useState<string>('');
     // hooks
     const fetchTodos = useFetchTodos();
-    const inputRef = useRef(null);
+    const inputRef = useRef<HTMLInputElement>(null);
     // actions
     const addTodo = () => {
         if (!todo || todo.trim() === '') {
@@ -22,14 +26,14 @@ const AddTodo = (props) => {
             setIsLoading(true);
             const newTodo = {id: uuidV4(), text: todo.trim(), done: false, date: new Date().toUTCString()};
             TodoApi.addTodo(newTodo).then(() => {
-                setError(null);
+                setError('');
                 setTodo('');
-                fetchTodos().finally(() => inputRef.current.focus());
+                fetchTodos().finally(() => inputRef.current?.focus());
             }).catch(e => setError(e)).finally(() => setIsLoading(false));
         }
     };
-    const onKeyDown = e => {
-        if (e.keyCode === 13) {
+    const onKeyDown = (e: KeyboardEvent) => {
+        if (e.code === 'Enter') {
             addTodo();
         }
     };
@@ -37,7 +41,7 @@ const AddTodo = (props) => {
         <div className="add-todo">
             <Input
                 data-testid='Add Todo'
-                ref={inputRef}
+                ref={inputRef as any}
                 icon={<Icon data-testid='Add Todo Icon' name="plus" link onClick={addTodo} disabled={todo.trim().length === 0}/>}
                 onKeyDown={onKeyDown}
                 onChange={e => setTodo(e.target.value)}
@@ -52,14 +56,4 @@ const AddTodo = (props) => {
     );
 };
 
-const ConnectedAddTodo = connect(state => {
-    return {
-        isLoading: state.todoApi.isLoading
-    };
-}, dispatch => {
-    return {
-        setIsLoading: isLoading => dispatch({ type: 'LOADING', value: isLoading })
-    };
-})(AddTodo);
-
-export default ConnectedAddTodo;
+export default AddTodo;

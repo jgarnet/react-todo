@@ -1,22 +1,25 @@
 import {Provider} from 'react-redux';
-import Todo from './Todo';
-import setupStore from '../../../store/setupStore';
+import Todo, {TodoProps} from './Todo';
+import {default as _Todo} from '@/types/todo';
+import setupStore from '@/store/setupStore';
 import {act, cleanup, fireEvent, render, screen} from '@testing-library/react';
+import React from 'react';
 
 const mockInvocations = {
     update: {},
     remove: ''
 };
-jest.mock('../../../api/TodoApi', () => ({
-    updateTodo: todo => {
+jest.mock('@/api/TodoApi', () => ({
+    updateTodo: (todo: _Todo) => {
         mockInvocations.update = todo;
         return Promise.resolve();
     },
-    removeTodo: todoId => {
+    removeTodo: (todoId: string) => {
         mockInvocations.remove = todoId;
         return Promise.resolve();
     }
 }));
+jest.mock('@/utils/getEnvProperty', () => () => 'localhost');
 jest.useFakeTimers();
 
 describe('Todo', () => {
@@ -26,7 +29,7 @@ describe('Todo', () => {
         mockInvocations.remove = '';
     });
     const store = setupStore();
-    const _render = props => render(
+    const _render = (props: TodoProps) => render(
         <Provider store={store}>
             <Todo {...props} />
         </Provider>
@@ -69,7 +72,7 @@ describe('Todo', () => {
         const removeButton = screen.queryByTestId('todo-remove');
         const todoElem = screen.queryByTestId('todo');
         await act(async () => {
-            await fireEvent.click(removeButton);
+            await fireEvent.click(removeButton as Element);
             jest.runAllTimers();
             expect(invoked).toEqual(true);
             expect(mockInvocations.remove).toEqual('test');
@@ -85,7 +88,7 @@ describe('Todo', () => {
         _render({ todo, onChange });
         const completeButton = screen.queryByTestId('todo-complete');
         await act(async () => {
-            await fireEvent.click(completeButton);
+            await fireEvent.click(completeButton as Element);
             expect(invoked).toEqual(true);
             expect(mockInvocations.update).toEqual({ ...todo, done: true });
         });
@@ -99,7 +102,7 @@ describe('Todo', () => {
         _render({ todo, onChange });
         const completeButton = screen.queryByTestId('todo-complete');
         await act(async () => {
-            await fireEvent.click(completeButton);
+            await fireEvent.click(completeButton as Element);
             expect(invoked).toEqual(false);
             expect(mockInvocations.update).toEqual({});
         });

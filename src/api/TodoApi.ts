@@ -1,5 +1,7 @@
 import axios from 'axios';
-import getEnvProperty from '../utils/getEnvProperty';
+import getEnvProperty from '@/utils/getEnvProperty';
+import ApiOptions from '@/types/apiOptions';
+import Todo from '@/types/todo';
 
 const DEFAULT_OPTIONS = {
     method: 'GET',
@@ -7,10 +9,10 @@ const DEFAULT_OPTIONS = {
         'Content-Type': 'application/json'
     }
 };
-const apiCall = (url, options) => {
+const apiCall = (url: string, options?: ApiOptions) => {
     return axios(url, {...DEFAULT_OPTIONS, ...options});
 };
-const appendParams = (url, options) => {
+const appendParams = (url: string, options: ApiOptions) => {
     if (!!options) {
         url += '?';
         for (const [key, value] of Object.entries(options)) {
@@ -22,27 +24,29 @@ const appendParams = (url, options) => {
 };
 const defaultUrl = `${getEnvProperty('VITE_APP_API_URL')}/todos`;
 const TodoApi = {
-    getTodos: async (options) => {
+    getTodos: async (options: ApiOptions) => {
         const response = await apiCall(appendParams(defaultUrl, options));
-        const todos = await response.data;
+        const todos = await response?.data ?? [];
+        // @ts-ignore
+        const totalCount = response?.headers?.get('X-Total-Count') ?? 0;
         return {
             todos,
-            totalCount: response.headers.get('X-Total-Count')
+            totalCount
         };
     },
-    addTodo: (todo) => {
+    addTodo: (todo: Todo) => {
         return apiCall(defaultUrl, {
             method: 'POST',
             data: JSON.stringify(todo)
         }).then(res => res.data);
     },
-    updateTodo: (todo) => {
+    updateTodo: (todo: Todo) => {
         return apiCall(`${defaultUrl}/${todo.id}`, {
             method: 'PUT',
             data: JSON.stringify(todo)
         }).then(res => res.data);
     },
-    removeTodo: (id) => {
+    removeTodo: (id: string) => {
         return apiCall(`${defaultUrl}/${id}`, {
             method: 'DELETE'
         }).then(res => res.data);

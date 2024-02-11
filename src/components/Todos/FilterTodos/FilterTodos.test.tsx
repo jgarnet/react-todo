@@ -1,7 +1,9 @@
 import {act, cleanup, fireEvent, render, screen} from '@testing-library/react';
-import setupStore from '../../../store/setupStore';
+import setupStore from '@/store/setupStore';
 import {Provider} from 'react-redux';
 import FilterTodos from './FilterTodos';
+import React from 'react';
+import {TodoFilters} from '@/types/todoApiStore';
 
 describe('FilterTodos', () => {
     afterEach(cleanup);
@@ -22,14 +24,15 @@ describe('FilterTodos', () => {
     it('should dispatch filter on click', async () => {
         _render();
         await act(async () => {
-            const filters = {
+            const filters: {[key: string]: TodoFilters} = {
                 all: {},
                 todo: {done: false},
                 done: {done: true}
             };
             for (const filter of Object.keys(filters)) {
                 const filterButton = screen.queryByTestId(`filter-${filter}`);
-                await fireEvent.click(filterButton);
+                await fireEvent.click(filterButton as Element);
+                // @ts-ignore
                 expect(store.getState().todoApi.filters).toEqual(filters[filter]);
                 expect(filterButton).toHaveClass('active');
             }

@@ -1,7 +1,8 @@
-import './App.css';
-import Todos from "./components/Todos/Todos";
-import setupStore from "./store/setupStore";
-import {Provider} from "react-redux";
+import './App.scss';
+import Todos from './components/Todos/Todos';
+import setupStore from './store/setupStore';
+import {Provider} from 'react-redux';
+import React from 'react';
 
 const store = setupStore();
 

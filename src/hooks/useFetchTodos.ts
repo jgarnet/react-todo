@@ -1,8 +1,9 @@
-import TodoApi from "../api/TodoApi";
-import {useDispatch, useSelector} from "react-redux";
+import TodoApi from '@/api/TodoApi';
+import {useDispatch, useSelector} from 'react-redux';
+import {GlobalState} from '@/types/globalStore';
 
 const useFetchTodos = () => {
-    const { page, limit, sort, filters } = useSelector(state => ({
+    const { page, limit, sort, filters } = useSelector((state: GlobalState) => ({
         page: state.todoApi.page,
         limit: state.todoApi.limit,
         sort: state.todoApi.sort,

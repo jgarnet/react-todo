@@ -1,10 +1,12 @@
-import {useDispatch, useSelector} from "react-redux";
-import {Button, Icon} from "semantic-ui-react";
+import React from 'react';
+import {useDispatch, useSelector} from 'react-redux';
+import {Button, Icon} from 'semantic-ui-react';
+import {GlobalState} from '@/types/globalStore';
 
 const SortTodos = () => {
-    const sort = useSelector(state => state.todoApi.sort);
+    const sort = useSelector((state: GlobalState) => state.todoApi.sort);
     const dispatch = useDispatch();
-    const setSort = sort => dispatch({type: 'SORT', value: sort});
+    const setSort = (sort: string) => dispatch({type: 'SORT', value: sort});
     return (
         <div data-testid='sort'>
             <Icon name='sort'/>

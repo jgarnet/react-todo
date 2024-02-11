@@ -1,4 +1,5 @@
 import {cleanup, render, screen} from '@testing-library/react';
+import React from 'react';
 import App from './App';
 
 jest.mock('./components/Todos/Todos', () => () => <div>Mock Todos</div>);

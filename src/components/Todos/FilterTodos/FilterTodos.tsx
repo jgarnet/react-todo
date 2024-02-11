@@ -1,9 +1,10 @@
 import './FilterTodos.scss';
-import React, {useState} from "react";
-import {useDispatch} from "react-redux";
-import {Button, Icon} from "semantic-ui-react";
+import React, {useState} from 'react';
+import {useDispatch} from 'react-redux';
+import {Button, Icon} from 'semantic-ui-react';
+import {TodoFilters} from '@/types/todoApiStore';
 
-const selectionFilters = {
+const selectionFilters: {[key: string]: TodoFilters} = {
     all: {},
     todo: {done: false},
     done: {done: true}
@@ -11,9 +12,9 @@ const selectionFilters = {
 
 const FilterTodos = () => {
     const dispatch = useDispatch();
-    const setFilters = filters => dispatch({type: 'SET_FILTERS', filters});
+    const setFilters = (filters: TodoFilters) => dispatch({type: 'SET_FILTERS', filters});
     const [selected, setSelected] = useState('all');
-    const handleSelect = selection => {
+    const handleSelect = (selection: string) => {
         if (selected !== selection) {
             setSelected(selection);
             setFilters({...selectionFilters[selection]});
