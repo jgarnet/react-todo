@@ -2,7 +2,7 @@
   "name": "mock-api",
   "version": "1.0.0",
   "scripts": {
-    "run": "shx cp src/db_default.json src/db.json && json-server --watch src/db.json --port 3001"
+    "run": "shx cp src/db_default.json src/db.json && json-server --watch src/db.json --port 3001 --host 0.0.0.0"
   },
   "dependencies": {
     "json-server": "^0.17.0"

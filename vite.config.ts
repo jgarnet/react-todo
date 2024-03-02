@@ -6,8 +6,9 @@ export default defineConfig({
     base: '',
     plugins: [react()],
     server: {
-        open: true,
-        port: 3000
+        open: false,
+        port: 3000,
+        host: '0.0.0.0'
     },
     resolve: {
         alias: [{ find: "@", replacement: resolve(__dirname, "./src") }]
